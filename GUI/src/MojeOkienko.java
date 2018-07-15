@@ -8,7 +8,7 @@ import javax.swing.JFrame;
 public class MojeOkienko extends JFrame implements ActionListener
 {
 	JButton bPodajDate, bWyjscie;
-	//Komentowanie dodanedfff
+	/////ff
 
 	public MojeOkienko()
 	{
