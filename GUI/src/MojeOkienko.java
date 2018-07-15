@@ -8,7 +8,7 @@ import javax.swing.JFrame;
 public class MojeOkienko extends JFrame implements ActionListener
 {
 	JButton bPodajDate, bWyjscie;
-	/////ff
+	/////Arek
 
 	public MojeOkienko()
 	{
@@ -26,6 +26,7 @@ public class MojeOkienko extends JFrame implements ActionListener
 		bWyjscie.setBounds(150, 75, 100, 20);
 		add(bWyjscie);
 		bWyjscie.addActionListener(this);
+		System.out.println("Test");
 	}
 
 	public static void main(String[] args)
