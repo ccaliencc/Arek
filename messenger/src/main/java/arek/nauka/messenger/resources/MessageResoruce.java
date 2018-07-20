@@ -13,6 +13,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+
+import arek.nauka.messenger.database.DataBaseHibernateConn;
 import arek.nauka.messenger.model.Message;
 import arek.nauka.messenger.resources.beans.MessageFilterBean;
 import arek.nauka.messenger.service.MessageService;
@@ -22,53 +24,73 @@ import arek.nauka.messenger.service.MessageService;
 @Produces(MediaType.APPLICATION_JSON)
 public class MessageResoruce
 {
-	MessageService messageService = new MessageService();
+
+	//MessageService messageService = new MessageService();
+	
+	DataBaseHibernateConn dataBaseHibernateConn  = new DataBaseHibernateConn();
 
 	//Sczytaj
+//	@GET
+//	public List<Message> getMessages(@BeanParam MessageFilterBean filterBean ) 
+//	{
+//		if(filterBean.getYear() >0)
+//		{
+//			return messageService.getAllMessagesforYear(filterBean.getYear());
+//		}
+//		if (filterBean.getStart() >=0 && filterBean.getSize() >=0)
+//		{
+//			return messageService.getAllMessagesPaginated(filterBean.getStart(), filterBean.getSize());
+//		}
+//			
+//		return messageService.getAllMessages();
+//	}
+	
 	@GET
-	public List<Message> getMessages(@BeanParam MessageFilterBean filterBean ) 
+	public List<Message> getMessages()
 	{
-		if(filterBean.getYear() >0)
-		{
-			return messageService.getAllMessagesforYear(filterBean.getYear());
-		}
-		if (filterBean.getStart() >=0 && filterBean.getSize() >=0)
-		{
-			return messageService.getAllMessagesPaginated(filterBean.getStart(), filterBean.getSize());
-		}
-			
-		return messageService.getAllMessages();
+		System.out.println("wejscoe w list");
+		return dataBaseHibernateConn.getAllMessages();
+		
 	}
-
-	//Utwórz
+	
+	
 	@POST
 	public Message addMessage(Message message)
 	{
-		return messageService.addMessage(message);
+		return dataBaseHibernateConn.saveMessage(message);
 	}
 	
-	//Update konkretnego ID wziętego z URL
-	@PUT
-	@Path("/{messageID}")
-	public Message updateMessage(@PathParam("messageID") Long ID, Message message)
-	{
-		message.setId(ID);
-		return messageService.updateMessage(message);
-	}
 	
-	// usuwanie konrketnej wiadomości
-	@DELETE
-	@Path("/{messageID}")
-	public Message deleteMessage(@PathParam("messageID") Long ID)
-	{
-		return messageService.removeMessage(ID);
-	}
-
-	//Sczytaj pojedyncza wiadomosc
-	@GET
-	@Path("/{messageID}") // informacja do jersey - co mapujesz w messageID, przekaż to za pomocą @PathParam do środka do zmiennej Long Id
-	public Message getMessage(@PathParam("messageID") Long ID)
-	{
-		return messageService.getMesage(ID);
-	}
+//
+//	//Utwórz
+//	@POST
+//	public Message addMessage(Message message)
+//	{
+//		return messageService.addMessage(message);
+//	}
+//	
+//	//Update konkretnego ID wziętego z URL
+//	@PUT
+//	@Path("/{messageID}")
+//	public Message updateMessage(@PathParam("messageID") Long ID, Message message)
+//	{
+//		message.setId(ID);
+//		return messageService.updateMessage(message);
+//	}
+//	
+//	// usuwanie konrketnej wiadomości
+//	@DELETE
+//	@Path("/{messageID}")
+//	public Message deleteMessage(@PathParam("messageID") Long ID)
+//	{
+//		return messageService.removeMessage(ID);
+//	}
+//
+//	//Sczytaj pojedyncza wiadomosc
+//	@GET
+//	@Path("/{messageID}") // informacja do jersey - co mapujesz w messageID, przekaż to za pomocą @PathParam do środka do zmiennej Long Id
+//	public Message getMessage(@PathParam("messageID") Long ID)
+//	{
+//		return messageService.getMesage(ID);
+//	}
 }
