@@ -2,9 +2,9 @@ package com.codebind;
 
 public class App
 {
-	public String Sample ()
+	public boolean getBool ()
 	{
-		return "sample";
+		return true;
 	}
 
 }

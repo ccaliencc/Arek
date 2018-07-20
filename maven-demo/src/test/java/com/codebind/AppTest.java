@@ -2,15 +2,17 @@ package com.codebind;
 
 import static org.junit.Assert.*;
 
+
 import org.junit.Test;
 
 public class AppTest
 {
 
 	@Test
-	public void test()
+	public void shouldReturnTrue()
 	{
-		fail("Not yet implemented");
+		App app = new App();
+		assertTrue(app.getBool());
 	}
 
 }
