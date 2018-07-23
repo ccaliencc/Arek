@@ -19,7 +19,7 @@ public class Main
 		session.beginTransaction();
 
 		session.save(student);
-		student.setStudent("Arek updated");
+		student.setStudent("Arek updated2");
 //		student = (Student) session.get(Student.class, 1); // 1 oznacza ID numer który chcemy zmienić
 //		System.out.println("Student Object having student name as: " + student.getStudent());
 //		

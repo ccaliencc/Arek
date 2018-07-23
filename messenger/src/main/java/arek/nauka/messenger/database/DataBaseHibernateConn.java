@@ -1,7 +1,7 @@
 package arek.nauka.messenger.database;
 
 import java.util.List;
-
+import java.util.Map;
 import java.util.ArrayList;
 
 import org.hibernate.Session;
@@ -14,45 +14,18 @@ import arek.nauka.messenger.model.Message;
 
 public class DataBaseHibernateConn
 {
-	//SessionFactory sessionFactory = null;
+	SessionFactory sessionFactory = null;
 	Session session = null;
 
-	private static final SessionFactory sessionFactory = buildSessionFactory();
-
-	private static SessionFactory buildSessionFactory()
-	{
-		try
-		{
-			// Create the SessionFactory from hibernate.cfg.xml
-			return new AnnotationConfiguration().configure().buildSessionFactory();
-
-		}
-		catch (Throwable ex)
-		{
-			// Make sure you log the exception, as it might be swallowed
-			System.err.println("Initial SessionFactory creation failed." + ex);
-			throw new ExceptionInInitializerError(ex);
-		}
-	}
-
-	public static SessionFactory getSessionFactory()
-	{
-		return sessionFactory;
-	}
-
-	public static void shutdown()
-	{
-		// Close caches and connection pools
-		getSessionFactory().close();
-	}
+	//private static final SessionFactory sessionFactory = null;
 
 	public DataBaseHibernateConn()
 	{
-		System.out.println("przed utworzeniem konfiguracji");
+		//		System.out.println("przed utworzeniem konfiguracji");
+		//sessionFactory = new Configuration().configure().buildSessionFactory();
+		//		session = sessionFactory.openSession();
+		//		System.out.println("po  utworzeniem session");
 
-		//sessionFactory = new AnnotationConfiguration().configure().buildSessionFactory();
-		getSessionFactory();
-		System.out.println("po  utworzeniem session");
 	}
 
 	public Message saveMessage(Message message)
@@ -79,12 +52,14 @@ public class DataBaseHibernateConn
 
 	public List<Message> getAllMessages()
 	{
-		System.out.println("lista załadowana");
 		List<Message> messages = new ArrayList<Message>();
 		try
 		{
+			
 			System.out.println("wszedł w try");
-			session = sessionFactory.openSession();
+			sessionFactory = new Configuration().configure().buildSessionFactory();
+			Session session = sessionFactory.openSession();
+		    System.out.println("po konfiguracji");
 			session.beginTransaction();
 			Query<Message> query = session.createQuery("From Message");
 
@@ -96,9 +71,10 @@ public class DataBaseHibernateConn
 		catch (Exception ex)
 		{
 			ex.printStackTrace();
-			System.out.println(ex.toString());
+			System.out.println("Błąd " + ex.toString());
 			session.getTransaction().rollback();
 		}
+		//return new ArrayList<Message>(messages1.values());
 		return messages;
 
 	}

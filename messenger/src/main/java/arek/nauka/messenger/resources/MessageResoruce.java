@@ -48,7 +48,7 @@ public class MessageResoruce
 	@GET
 	public List<Message> getMessages()
 	{
-		System.out.println("wejscoe w list");
+		System.out.println("wejscie w list");
 		return dataBaseHibernateConn.getAllMessages();
 		
 	}
@@ -57,6 +57,7 @@ public class MessageResoruce
 	@POST
 	public Message addMessage(Message message)
 	{
+		System.out.println("wejscie w list");
 		return dataBaseHibernateConn.saveMessage(message);
 	}
 	
