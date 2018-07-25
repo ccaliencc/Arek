@@ -28,5 +28,12 @@
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Hibernate Library"/>
+	<classpathentry kind="lib" path="D:/Java/DoJavy/Hibernate/jaxb-api-2.2.11.jar"/>
+	<classpathentry kind="lib" path="D:/Java/DoJavy/Hibernate/sqljdbc_6.4.0.0_enu/sqljdbc_6.4/enu/mssql-jdbc-6.4.0.jre9.jar" sourcepath="C:/Users/Komputronik/.m2/repository/com/microsoft/sqlserver/mssql-jdbc/6.4.0.jre9/mssql-jdbc-6.4.0.jre9-sources.jar">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

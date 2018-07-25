@@ -1,9 +1,22 @@
 package arek.nauka.messenger.service;
 
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
+
+import javax.persistence.Convert;
+import javax.persistence.Id;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.boot.Metadata;
+import org.hibernate.boot.MetadataSources;
+import org.hibernate.boot.registry.StandardServiceRegistry;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.hibernate.cfg.Configuration;
+import org.hibernate.query.Query;
 
 import arek.nauka.messenger.database.DatabaseClass;
 import arek.nauka.messenger.exception.DataNotFoundException;
@@ -11,59 +24,91 @@ import arek.nauka.messenger.model.Message;
 
 public class MessageService
 {
-	private Map<Long, Message> messages = DatabaseClass.getMessages();
+	SessionFactory sessionFactory = null;
+	Session session = null;
+	List<Message> messagesfromSQL = null;
 
 	public MessageService()
 	{
-		messages.put(1L, new Message(1, "Hello World", "Arek Krawczyk"));
-		messages.put(2L, new Message(2, "Hello Java", "Arek Krawczyk"));
+		messagesfromSQL = new DatabaseClass().getAllMessages(); // ściągnij wszystkie wiadomości z SQL
+		sessionFactory = new Configuration().configure().buildSessionFactory();
+		session = sessionFactory.openSession();
+
 	}
 
 	public List<Message> getAllMessages()
 	{
-		return new ArrayList<Message>(messages.values());
+		return messagesfromSQL;
 	}
 
 	public List<Message> getAllMessagesforYear(int year)
 	{
-		List<Message> messagesForYear = new ArrayList<>();
+		List<Message> messagesForYear = messagesfromSQL;
 		Calendar cal = Calendar.getInstance();
-		for (Message message : messages.values())
+
+		try
 		{
-			cal.setTime(message.getCreated());
-			if (cal.get(Calendar.YEAR) == year)
+			for (Message message : messagesForYear)
 			{
-				messagesForYear.add(message);
+				cal.setTime(message.getCreated());
+				if (cal.get(Calendar.YEAR) == year)
+				{
+					messagesForYear.add(message);
+				}
 			}
+			session.getTransaction().commit();
+			session.close();
 
 		}
+		catch (Throwable th)
+		{
+			System.err.println("Enitial SessionFactory creation failed" + th);
+			throw new ExceptionInInitializerError(th);
+		}
+
 		return messagesForYear;
 
 	}
 
 	public List<Message> getAllMessagesPaginated(int start, int size)
 	{
-		ArrayList<Message> list = new ArrayList<Message>(messages.values());
-		if(start + size > list.size()) return new ArrayList<Message>();
+		List<Message> list = messagesfromSQL;
+		
+		if (start + size > list.size())
+			return new ArrayList<Message>();
 		return list.subList(start, start + size);
-
 	}
 
-	public Message getMesage(long id)
+	public Message getMesage(Long Id)
 	{
-		Message  message = messages.get(id);
-		if(message == null)
+		int ID = Id.intValue();
+		Message message = messagesfromSQL.get(ID);
+		if (message == null)
 		{
-			throw new DataNotFoundException("Message with id " + id + " not found");
+			throw new DataNotFoundException("Message with id " + Id + " not found");
 		}
 		return message;
 	}
 
 	public Message addMessage(Message message)
 	{
-		message.setId(messages.size() + 1); // powiększenie arraylist o 1
-		messages.put(message.getId(), message); // dodanie do listy
+		try
+		{
+			session = sessionFactory.openSession();
+			session.beginTransaction();
+			session.save(message);
+			session.getTransaction().commit();
+			session.close();
+
+		}
+		catch (Exception ex)
+		{
+			ex.printStackTrace();
+			System.out.println(ex.toString());
+			session.getTransaction().rollback();
+		}
 		return message;
+
 	}
 
 	public Message updateMessage(Message message)
@@ -71,13 +116,28 @@ public class MessageService
 		if (message.getId() <= 0)
 			return null;
 
-		messages.put(message.getId(), message);
+		message.setAuthor(message.getAuthor());
+		message.setMessage(message.getMessage());
+		message = (Message) session.get(Message.class, 1); 
+		session.getTransaction().commit();
+		session.close();
 		return message;
 	}
 
-	public Message removeMessage(long id)
+	public Message removeMessage(Long Id)
 	{
-		return messages.remove(id);
+		
+		Session session ;
+	    Message message ;
+
+	    session = sessionFactory.getCurrentSession();
+	    message = (Message)session.load(Message.class,Id);
+	    session.delete(message);
+
+	    //This makes the pending delete to be done
+	    session.flush() ;
+		return null;
+
 	}
 
 }

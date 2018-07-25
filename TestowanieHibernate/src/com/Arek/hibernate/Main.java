@@ -13,6 +13,9 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.query.Query;
 
 
+import net.bytebuddy.description.ModifierReviewable.OfAbstraction;
+
+
 public class Main
 {
 
@@ -48,13 +51,16 @@ public class Main
 			SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
 			Session session = sessionFactory.openSession();
 			session.beginTransaction();
-			System.out.println("po konfiguracji");
-			//session.beginTransaction();
-			Query<Student> query = session.createQuery("From Message");
+			
+			
+			Query<Student> query = session.createQuery("From Student");
 
-			messages = query.getResultList();
+			messages = query.list();
 			session.getTransaction().commit();
 			session.close();
+			for (Student s : messages)
+				System.out.println(s.getStudent());
+
 		}
 		catch (Throwable th)
 		{
