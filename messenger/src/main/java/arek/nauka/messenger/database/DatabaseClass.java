@@ -1,24 +1,40 @@
 package arek.nauka.messenger.database;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 
 import arek.nauka.messenger.model.Message;
-import arek.nauka.messenger.model.Profile;
 
 public class DatabaseClass
 {
-	private static Map<Long, Message> messages = new HashMap<>();
-	private static Map<String, Profile> profiles = new HashMap<>();
+	SessionFactory sessionFactory = null;
+	Session session = null;
 	
-	public static Map<Long, Message> getMessages()
+	public List<Message> getAllMessages()
 	{
+		List<Message> messages = new ArrayList<Message>();
+
+		try
+		{
+			session.beginTransaction();
+			Query<Message> query = session.createQuery("From Message");
+
+			messages = query.getResultList();
+			session.getTransaction().commit();
+			session.close();
+
+		}
+		catch (Throwable th)
+		{
+			System.err.println("Enitial SessionFactory creation failed" + th);
+			throw new ExceptionInInitializerError(th);
+		}
+
 		return messages;
 	}
 	
-	public static Map<String, Profile> getProfiles()
-	{
-		return profiles;
-	}
-
 }

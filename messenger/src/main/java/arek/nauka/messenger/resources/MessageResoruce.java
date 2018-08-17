@@ -13,8 +13,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-
-import arek.nauka.messenger.database.DataBaseHibernateConn;
 import arek.nauka.messenger.model.Message;
 import arek.nauka.messenger.resources.beans.MessageFilterBean;
 import arek.nauka.messenger.service.MessageService;
@@ -24,11 +22,8 @@ import arek.nauka.messenger.service.MessageService;
 @Produces(MediaType.APPLICATION_JSON)
 public class MessageResoruce
 {
-
-	//MessageService messageService = new MessageService();
+	MessageService dataBaseMessageServiceConn = new MessageService(); 
 	
-	DataBaseHibernateConn dataBaseHibernateConn  = new DataBaseHibernateConn();
-
 	//Sczytaj
 //	@GET
 //	public List<Message> getMessages(@BeanParam MessageFilterBean filterBean ) 
@@ -48,8 +43,7 @@ public class MessageResoruce
 	@GET
 	public List<Message> getMessages()
 	{
-		System.out.println("wejscie w list");
-		return dataBaseHibernateConn.getAllMessages();
+		return dataBaseMessageServiceConn.getAllMessages();
 		
 	}
 	
@@ -57,41 +51,33 @@ public class MessageResoruce
 	@POST
 	public Message addMessage(Message message)
 	{
-		System.out.println("wejscie w list");
-		return dataBaseHibernateConn.saveMessage(message);
+		return dataBaseMessageServiceConn.addMessage(message);
 	}
 	
+
 	
-//
-//	//Utwórz
-//	@POST
-//	public Message addMessage(Message message)
-//	{
-//		return messageService.addMessage(message);
-//	}
-//	
-//	//Update konkretnego ID wziętego z URL
-//	@PUT
-//	@Path("/{messageID}")
-//	public Message updateMessage(@PathParam("messageID") Long ID, Message message)
-//	{
-//		message.setId(ID);
-//		return messageService.updateMessage(message);
-//	}
-//	
-//	// usuwanie konrketnej wiadomości
-//	@DELETE
-//	@Path("/{messageID}")
-//	public Message deleteMessage(@PathParam("messageID") Long ID)
-//	{
-//		return messageService.removeMessage(ID);
-//	}
-//
-//	//Sczytaj pojedyncza wiadomosc
-//	@GET
-//	@Path("/{messageID}") // informacja do jersey - co mapujesz w messageID, przekaż to za pomocą @PathParam do środka do zmiennej Long Id
-//	public Message getMessage(@PathParam("messageID") Long ID)
-//	{
-//		return messageService.getMesage(ID);
-//	}
+	//Update konkretnego ID wziętego z URL
+	@PUT
+	@Path("/{messageID}")
+	public Message updateMessage(@PathParam("messageID") Long ID, Message message)
+	{
+		message.setId(ID);
+		return dataBaseMessageServiceConn.updateMessage(message);
+	}
+	
+	// usuwanie konrketnej wiadomości
+	@DELETE
+	@Path("/{messageID}")
+	public Message deleteMessage(@PathParam("messageID") Long ID)
+	{
+		return dataBaseMessageServiceConn.removeMessage(ID);
+	}
+
+	//Sczytaj pojedyncza wiadomosc
+	@GET
+	@Path("/{messageID}") // informacja do jersey - co mapujesz w messageID, przekaż to za pomocą @PathParam do środka do zmiennej Long Id
+	public Message getMessage(@PathParam("messageID") Long ID)
+	{
+		return dataBaseMessageServiceConn.getMesage(ID);
+	}
 }
